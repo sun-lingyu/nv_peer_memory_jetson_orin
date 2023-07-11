@@ -70,18 +70,8 @@
 	(((v) & NVIDIA_P2P_MINOR_VERSION_MASK))
 #endif
 
-/*
- *	Note: before major version 2, struct dma_mapping had no version field,
- *	so it is not possible to check version compatibility. In this case
- *	let us just avoid dma mappings altogether.
- */
-#if defined(NVIDIA_P2P_DMA_MAPPING_VERSION) &&	\
-	(NVIDIA_P2P_MAJOR_VERSION(NVIDIA_P2P_DMA_MAPPING_VERSION) >= 2)
 #pragma message("Enable nvidia_p2p_dma_map_pages support")
 #define NV_DMA_MAPPING 1
-#else
-#define NV_DMA_MAPPING 0
-#endif
 
 #ifndef READ_ONCE
 #define READ_ONCE(x) ACCESS_ONCE(x)
@@ -284,8 +274,8 @@ static int nv_dma_map(struct sg_table *sg_head, void *context,
 		nv_mem_context->sg_allocated = 1;
 		for_each_sg(sg_head->sgl, sg, nv_mem_context->npages, i) {
 			sg_set_page(sg, NULL, nv_mem_context->page_size, 0);
-			sg->dma_address = dma_mapping->dma_addresses[i];
-			sg->dma_length = nv_mem_context->page_size;
+			sg->dma_address = dma_mapping->hw_address[i];
+			sg->dma_length = dma_mapping->hw_len[i];//???
 		}
 	}
 #else
