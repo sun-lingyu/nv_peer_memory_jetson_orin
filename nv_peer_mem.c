@@ -275,7 +275,7 @@ static int nv_dma_map(struct sg_table *sg_head, void *context,
 		for_each_sg(sg_head->sgl, sg, nv_mem_context->npages, i) {
 			sg_set_page(sg, NULL, nv_mem_context->page_size, 0);
 			sg->dma_address = dma_mapping->hw_address[i];
-			sg->dma_length = dma_mapping->hw_len[i];//???
+			sg->dma_length = dma_mapping->hw_len[i];
 		}
 	}
 #else
